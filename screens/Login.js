@@ -63,7 +63,7 @@ const Login = ({navigation}) => {
                         <ExtraText>
                             Don't Have An Account already?
                         </ExtraText>
-                        <TextLink onPress={() => navigation.navigate("SignUp")}>
+                        <TextLink onPress={() => navigation.navigate("BloodReq")}>
                             <TextLinkContent>
                                 SignUp
                             </TextLinkContent>
@@ -78,7 +78,7 @@ const Login = ({navigation}) => {
     );
 }
 
-const MyTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
+export const MyTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
     return (
         <View>
             <LeftIcon>
