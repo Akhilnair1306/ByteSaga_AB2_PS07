@@ -49,6 +49,13 @@ export const PageTitle = styled.Text`
     padding: 10px
 `;
 
+export const DonorDashboardTitle = styled.Text`
+    font-size: 20px;
+    text-align: left;
+    font-weight: bold;
+    color: ${brand};
+    padding: 10px
+`;
 export const SubTitle  = styled.Text `
     font-size: 18px;
     margin-bottom: 20px;
@@ -99,7 +106,7 @@ export const StyledButton = styled.TouchableOpacity`
     justify-content: center;
     border-radius: 5px;
     margin-vertical: 5px;
-    height: 60px;
+
     align-items: center;
 `;
 
@@ -123,7 +130,7 @@ export const ExtraView = styled.View`
     justify-content: center;
     flex-direction: row;
     align-items: center;
-    padding: 10px;
+    padding: 5px;
 `
 
 export const ExtraText = styled.Text`

@@ -28,7 +28,7 @@ const validationSchema = Yup.object({
   additionalNotes: Yup.string().optional(),
 });
 
-const BloodRequestScreen = () => {
+const BloodRequestScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);  // State for modal visibility
   const [formValues, setFormValues] = useState(null);  // Store form values when the modal is opened
 
@@ -140,7 +140,8 @@ const BloodRequestScreen = () => {
                 <StyledButton
                   onPress={() => {
                     setFormValues(values);
-                    handleSubmit() // Store the form values when the modal is opened
+                    handleSubmit();
+                    navigation.navigate("DonorDash") // Store the form values when the modal is opened
                     // setModalVisible(true);  // Show the modal
                   }}
                 >
