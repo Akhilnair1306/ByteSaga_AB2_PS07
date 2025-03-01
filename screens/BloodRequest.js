@@ -1,24 +1,19 @@
 import React, { useState } from 'react';
-import { ScrollView, Modal, View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { 
-  StyledContainer, 
-  InnerContainer, 
-  PageLogo, 
-  PageTitle, 
-  SubTitle, 
-  StyledFormArea, 
-  StyledTextInput, 
-  StyledInputLabel, 
-  StyledButton, 
-  ButtonText, 
-  MsgBox, 
-  Line 
-} from '../components/styles';
+import {
+  colors,
+  typography,
+  spacing,
+  buttons,
+  containers,
+  layout,
+} from '../components/styles1'; // Use your existing styles
 import { Picker } from '@react-native-picker/picker';
 import KeyboardAvoidWrapper from '../components/KeyboardAvoidingWrapper';
-import { MyTextInput } from './Login';
+import { TextInput } from 'react-native-gesture-handler'; // Correct import
+import FloatingNavigationBar from '../components/floatingNavigationBar';
 
 // Validation Schema
 const validationSchema = Yup.object({
@@ -28,9 +23,9 @@ const validationSchema = Yup.object({
   additionalNotes: Yup.string().optional(),
 });
 
-const BloodRequestScreen = () => {
-  const [modalVisible, setModalVisible] = useState(false);  // State for modal visibility
-  const [formValues, setFormValues] = useState(null);  // Store form values when the modal is opened
+const BloodRequestScreen = ({ navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [formValues, setFormValues] = useState(null); // Store form values when the modal is opened
 
   // Function to handle form submission
   const handleSubmit = (values) => {
@@ -45,11 +40,10 @@ const BloodRequestScreen = () => {
 
   return (
     <KeyboardAvoidWrapper>
-      <StyledContainer>
-        <InnerContainer>
-          <PageLogo />
-          <PageTitle>Blood Request</PageTitle>
-          <SubTitle>Request Blood for Immediate Need</SubTitle>
+      <View style={containers.screen}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.pageTitle}>Blood Request</Text>
+          <Text style={styles.subTitle}>Request Blood for Immediate Need</Text>
 
           <Formik
             initialValues={{
@@ -60,147 +54,158 @@ const BloodRequestScreen = () => {
             }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
-              console.log(values);
-              // You can navigate or handle the values here
+              setFormValues(values);
+              handleSubmit(values);
+              navigation.navigate("DonorDash");
             }}
           >
             {({ values, handleChange, handleBlur, handleSubmit, errors, touched }) => (
-              <StyledFormArea>
+              <View style={styles.formArea}>
                 {/* Blood Type */}
-                <StyledInputLabel>Select Blood Type</StyledInputLabel>
-                <Picker
-                  selectedValue={values.bloodType}
-                  onValueChange={handleChange('bloodType')}
-                  style={{
-                    backgroundColor: '#E5E7EB',
-                    padding: 15,
-                    borderRadius: 5,
-                    height: 60,
-                  }}
-                >
-                  <Picker.Item label="Select Blood Type" value="" />
-                  <Picker.Item label="A+" value="A+" />
-                  <Picker.Item label="B+" value="B+" />
-                  <Picker.Item label="O+" value="O+" />
-                  <Picker.Item label="AB+" value="AB+" />
-                  <Picker.Item label="A-" value="A-" />
-                  <Picker.Item label="B-" value="B-" />
-                  <Picker.Item label="O-" value="O-" />
-                  <Picker.Item label="AB-" value="AB-" />
-                </Picker>
+                <Text style={styles.inputLabel}>Select Blood Type</Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={values.bloodType}
+                    onValueChange={handleChange('bloodType')}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Select Blood Type" value="" />
+                    <Picker.Item label="A+" value="A+" />
+                    <Picker.Item label="B+" value="B+" />
+                    <Picker.Item label="O+" value="O+" />
+                    <Picker.Item label="AB+" value="AB+" />
+                    <Picker.Item label="A-" value="A-" />
+                    <Picker.Item label="B-" value="B-" />
+                    <Picker.Item label="O-" value="O-" />
+                    <Picker.Item label="AB-" value="AB-" />
+                  </Picker>
+                </View>
                 {touched.bloodType && errors.bloodType && (
-                  <MsgBox>{errors.bloodType}</MsgBox>
+                  <Text style={styles.errorMsg}>{errors.bloodType}</Text>
                 )}
 
                 {/* Urgency Level */}
-                <StyledInputLabel>Urgency Level</StyledInputLabel>
-                <Picker
-                  selectedValue={values.urgencyLevel}
-                  onValueChange={handleChange('urgencyLevel')}
-                  style={{
-                    backgroundColor: '#E5E7EB',
-                    padding: 15,
-                    borderRadius: 5,
-                    height: 60,
-                  }}
-                >
-                  <Picker.Item label="Select Urgency" value="" />
-                  <Picker.Item label="Normal" value="Normal" />
-                  <Picker.Item label="Urgent" value="Urgent" />
-                  <Picker.Item label="Critical" value="Critical" />
-                </Picker>
+                <Text style={styles.inputLabel}>Urgency Level</Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={values.urgencyLevel}
+                    onValueChange={handleChange('urgencyLevel')}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Select Urgency" value="" />
+                    <Picker.Item label="Normal" value="Normal" />
+                    <Picker.Item label="Urgent" value="Urgent" />
+                    <Picker.Item label="Critical" value="Critical" />
+                  </Picker>
+                </View>
                 {touched.urgencyLevel && errors.urgencyLevel && (
-                  <MsgBox>{errors.urgencyLevel}</MsgBox>
+                  <Text style={styles.errorMsg}>{errors.urgencyLevel}</Text>
                 )}
 
                 {/* Hospital Location */}
-                <MyTextInput
-                  label="Hospital Location"
-                  icon="location" // Icon for location
+                <Text style={styles.inputLabel}>Hospital Location</Text>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Hospital Location"
                   value={values.hospitalLocation}
                   onChangeText={handleChange('hospitalLocation')}
                   onBlur={handleBlur('hospitalLocation')}
-                  isPassword={false} // Not a password field
                 />
                 {touched.hospitalLocation && errors.hospitalLocation && (
-                  <MsgBox>{errors.hospitalLocation}</MsgBox>
+                  <Text style={styles.errorMsg}>{errors.hospitalLocation}</Text>
                 )}
 
                 {/* Additional Notes */}
-                <MyTextInput
-                  label="Additional Notes"
-                  icon="note" // Icon for additional notes
+                <Text style={styles.inputLabel}>Additional Notes</Text>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Additional Notes"
                   value={values.additionalNotes}
                   onChangeText={handleChange('additionalNotes')}
                   onBlur={handleBlur('additionalNotes')}
-                  isPassword={false} // Not a password field
+                  multiline={true} // Allow multiple lines
+                  numberOfLines={4}  // Set the number of lines
                 />
 
                 {/* Confirm Request Button */}
-                <StyledButton
-                  onPress={() => {
-                    setFormValues(values);
-                    handleSubmit() // Store the form values when the modal is opened
-                    // setModalVisible(true);  // Show the modal
-                  }}
-                >
-                  <ButtonText>Confirm Request</ButtonText>
-                </StyledButton>
+                <TouchableOpacity style={buttons.primary} onPress={handleSubmit}>
+                  <Text style={styles.buttonText}>Confirm Request</Text>
+                </TouchableOpacity>
 
                 {/* Optionally, Display a Message */}
-                <MsgBox>Note: Once you confirm, the request will be broadcasted to nearby donors.</MsgBox>
-              </StyledFormArea>
+                <Text style={styles.note}>Note: Once you confirm, the request will be broadcasted to nearby donors.</Text>
+              </View>
             )}
           </Formik>
-        </InnerContainer>
-      </StyledContainer>
+        </ScrollView>
+        <FloatingNavigationBar/>
+      </View>
 
       {/* Confirmation Modal */}
-      {/* <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={handleCancel}
-      >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <View style={{
-            backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%', alignItems: 'center'
-          }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Confirm Your Request</Text>
-            <Text style={{ marginVertical: 10 }}>Are you sure you want to submit this blood request?</Text>
-
-            <View style={{ flexDirection: 'row', marginTop: 20 }}>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#4CAF50',
-                  padding: 10,
-                  margin: 5,
-                  borderRadius: 5,
-                }}
-                onPress={() => {
-                  handleSubmit();  // Call form submission
-                }}
-              >
-                <Text style={{ color: 'white' }}>Confirm</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#f44336',
-                  padding: 10,
-                  margin: 5,
-                  borderRadius: 5,
-                }}
-                onPress={handleCancel}
-              >
-                <Text style={{ color: 'white' }}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
+      {/* Remove Modal for now */}
     </KeyboardAvoidWrapper>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    ...containers.centered,
+    paddingHorizontal: spacing.xl,
+  },
+  pageTitle: {
+    ...typography.heading,
+    marginBottom: spacing.md,
+    textAlign: 'center',
+    color: colors.primary,
+  },
+  subTitle: {
+    ...typography.subheading,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
+    color: colors.grey,
+  },
+  formArea: {
+    width: '100%',
+  },
+  inputLabel: {
+    ...typography.subheading,
+    fontSize: 18,
+    marginBottom: spacing.sm,
+    color: colors.dark,
+  },
+  textInput: {
+    backgroundColor: colors.white,
+    borderRadius: layout.borderRadius.medium,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    fontSize: 16,
+    color: colors.dark,
+    ...layout.shadow.small,
+  },
+  pickerContainer: {
+    backgroundColor: colors.white,
+    borderRadius: layout.borderRadius.medium,
+    marginBottom: spacing.md,
+    ...layout.shadow.small,
+  },
+  picker: {
+    color: colors.dark,
+  },
+  buttonText: {
+    ...typography.button,
+    textAlign: 'center'
+  },
+  note: {
+    ...typography.caption,
+    textAlign: 'center',
+    marginTop: spacing.md,
+    color: colors.grey,
+  },
+  errorMsg: {
+    color: 'red',
+    marginBottom: spacing.md,
+    textAlign: 'left',
+  },
+});
 
 export default BloodRequestScreen;
