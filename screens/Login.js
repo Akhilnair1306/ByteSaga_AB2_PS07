@@ -1,100 +1,128 @@
-import React, { useState } from 'react'
-import { StatusBar } from 'expo-status-bar';
-import { StyledContainer, InnerContainer, PageLogo, PageTitle, SubTitle, StyledFormArea, LeftIcon, StyledButton,StyledInputLabel, StyledTextInput, RightIcon, MsgBox, ButtonText, ExtraView, ExtraText, TextLinkContent, TextLink } from '../components/styles';
-import { Formik } from 'formik';
-import { View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  KeyboardAvoidingView,
+  Platform
+} from 'react-native';
+import { colors, typography, spacing, buttons, containers, layout } from '../components/styles1';
 
-//colors
-import { Colors } from '../components/styles';
+const Login = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-//icons
-import {Ionicons, Octicons} from '@expo/vector-icons'
-import KeyboardAvoidWrapper from '../components/KeyboardAvoidingWrapper';
+  const handleLogin = async () => {
+    // Basic validation
+    if (!email || !password) {
+      setError('Please enter both email and password.');
+      return;
+    }
 
-const {brand, darkLight} = Colors;
-const Login = ({navigation}) => {
-    const [hidePassword, setHidePassword] = useState(true);
+    // In a real app, you'd make an API call here
+    // to authenticate the user.  For now, we'll just
+    // simulate a successful login.
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-    return(
-        <KeyboardAvoidWrapper>
-        <StyledContainer>
-            <StatusBar style ='dark' />
-            <InnerContainer>
-            <PageLogo />
-            <PageTitle>Donate Us</PageTitle>
-            <SubTitle> Login</SubTitle>
-            <Formik initialValues={{ email: '', password: ''}}
-                    onSubmit={( values) => {
-                        console.log(values);
-                        navigation.navigate("SignUp");
-                    }}
-            >{({handleChange, handleBlur, handleSubmit, values}) => (
-                <StyledFormArea>
-                     <MyTextInput
-                label="Email Address"
-                icon="mail"
-                placeholder="andyj@gmail.com"
-                placeholderTextColor={darkLight}
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                value={values.email}
-                keyboardType= "email-address"
-              />
-                    <MyTextInput  
-                    label= "Password"
-                    icon="lock"
-                    placeholder="*****"
-                    placeholderTextColor={darkLight}
-                    onChangeText={handleChange('password')}
-                    onBlur={handleBlur('password')}
-                    value={values.password}
-                    secureTextEntry = {hidePassword}
-                    isPassword = {true}
-                    hidePassword = {hidePassword}
-                    setHidePassword={setHidePassword}
-                    />
-                    <MsgBox>...</MsgBox>
-                    <StyledButton onPress={handleSubmit}>
-                        <ButtonText>
-                            Login
-                        </ButtonText>
-                    </StyledButton>
-                    <ExtraView>
-                        <ExtraText>
-                            Don't Have An Account already?
-                        </ExtraText>
-                        <TextLink onPress={() => navigation.navigate("BloodReq")}>
-                            <TextLinkContent>
-                                SignUp
-                            </TextLinkContent>
-                        </TextLink>
-                    </ExtraView>
-                </StyledFormArea>
-            )}
-            </Formik>
-            </InnerContainer>
-        </StyledContainer>
-        </KeyboardAvoidWrapper>
-    );
-}
+      // Replace this with your actual login logic
+      if (email === 'test@example.com' && password === 'password') {
+        // Successful login - navigate to main app screen
+        navigation.navigate('MainApp'); // Replace 'MainApp' with your main screen name
+      } else {
+        setError('Invalid email or password.');
+      }
+    } catch (err) {
+      setError('Login failed. Please try again.');
+      console.error('Login error:', err);  // Log the error for debugging
+    }
+  };
 
-export const MyTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
-    return (
-        <View>
-            <LeftIcon>
-                <Octicons name={icon} size={30} color={brand} />
-            </LeftIcon>
-            <StyledInputLabel
-             keyboardType="default"
-             focusable={true}
-             >{label}</StyledInputLabel>
-            <StyledTextInput {...props}/>
-            { isPassword && (
-                <RightIcon onPress={() => setHidePassword(!hidePassword)}>
-                    <Ionicons size ={30} name={hidePassword ? 'eye-off' : 'eye'} color={darkLight} />
-                </RightIcon>
-            )}
+  return (
+    <SafeAreaView style={containers.screen}>
+      <StatusBar backgroundColor={colors.background} barStyle="dark-content" />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0} // Adjust as needed
+      >
+        <View style={styles.container}>
+          <Text style={styles.title}>Log In</Text>
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+
+          <TouchableOpacity style={buttons.primary} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Log In</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+            <Text style={styles.signUpText}>
+              Don't have an account? <Text style={styles.signUpLink}>Sign Up</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
-    )
-}
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    ...containers.centered,
+    paddingHorizontal: spacing.xl,
+  },
+  title: {
+    ...typography.heading,
+    marginBottom: spacing.lg,
+  },
+  input: {
+    backgroundColor: colors.white,
+    borderRadius: layout.borderRadius.medium,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    fontSize: 16,
+    color: colors.dark,
+    ...layout.shadow.small,
+    width: '100%',
+  },
+  buttonText: {
+    ...typography.button,
+  },
+  signUpText: {
+    ...typography.caption,
+    marginTop: spacing.md,
+    textAlign: 'center',
+  },
+  signUpLink: {
+    color: colors.primary,
+    fontWeight: 'bold',
+  },
+  error: {
+    color: 'red',
+    marginBottom: spacing.md,
+    textAlign: 'center',
+  }
+});
+
 export default Login;

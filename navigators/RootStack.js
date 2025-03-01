@@ -5,6 +5,7 @@ import { createStaticNavigation, NavigationContainer } from '@react-navigation/n
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignUp from '../screens/Signup';
 import Login from '../screens/Login';
+import WelcomeScreen from '../screens/Welcome';
 import { Colors } from '../components/styles';
 import BloodRequestScreen from '../screens/BloodRequest';
 // import SignUp from './screens/Signup';
@@ -26,9 +27,10 @@ const RootStack = () => {
                     paddingLeft: 20
                 }
             }}
-            initialRouteName= 'BloodReq'
+            initialRouteName= 'Welcome'
             >
                 <Stack.Screen name= "Login" component={Login}/>
+                <Stack.Screen name="Welcome" component={WelcomeScreen} />
                 <Stack.Screen name= "SignUp" component={SignUp}/>
                 <Stack.Screen name= "BloodReq" component={BloodRequestScreen}/>
                 {/* <Stack.Screen name= "Login" component={Login}/> */}
