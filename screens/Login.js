@@ -12,7 +12,7 @@ import {Ionicons, Octicons} from '@expo/vector-icons'
 import KeyboardAvoidWrapper from '../components/KeyboardAvoidingWrapper';
 
 const {brand, darkLight} = Colors;
-const Login = () => {
+const Login = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
 
     return(
@@ -25,7 +25,8 @@ const Login = () => {
             <SubTitle> Login</SubTitle>
             <Formik initialValues={{ email: '', password: ''}}
                     onSubmit={( values) => {
-                        console.log(values)
+                        console.log(values);
+                        navigation.navigate("SignUp");
                     }}
             >{({handleChange, handleBlur, handleSubmit, values}) => (
                 <StyledFormArea>
@@ -62,7 +63,7 @@ const Login = () => {
                         <ExtraText>
                             Don't Have An Account already?
                         </ExtraText>
-                        <TextLink>
+                        <TextLink onPress={() => navigation.navigate("SignUp")}>
                             <TextLinkContent>
                                 SignUp
                             </TextLinkContent>
