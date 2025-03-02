@@ -13,6 +13,7 @@ import DonorDashboard from '../screens/Donor/DonorDashboard';
 import RequestHistoryScreen from '../screens/RequestHistoryScreen';
 import SOSScreen from '../screens/SOSScreen';
 // import Profile from '../screens/Profile'; // Import the Profile screen
+import ProfileScreen from '../screens/ProfileScreen';
 
 import { Colors } from '../components/styles';
 
@@ -58,6 +59,7 @@ const RootStack = () => {
                         <Stack.Screen name="DonorDash" component={DonorDashboard} />
                         <Stack.Screen name="ReqHisScreen" component={RequestHistoryScreen} />
                         <Stack.Screen name="SOSScreen" component={SOSScreen} />
+                        <Stack.Screen name="Profile" component={ProfileScreen} />
                         
                     </Stack.Navigator>
 
