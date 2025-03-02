@@ -1,17 +1,10 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import SignUp from './screens/Signup';
+import { StyleSheet } from 'react-native';
 import RootStack from './navigators/RootStack';
 
-
 export default function App() {
-  return (
-    <RootStack />
-    // <View style={styles.container}>
-    //   <Text>Open up App.js to start working on your app!</Text>
-    //   <StatusBar style="auto" />
-    // </View>
-  );
+  return <RootStack />;
 }
 
 const styles = StyleSheet.create({
