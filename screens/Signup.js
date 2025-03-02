@@ -1,5 +1,4 @@
-//SignUp.js
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -13,9 +12,9 @@ import {
   ScrollView
 } from 'react-native';
 import { colors, typography, spacing, buttons, containers, layout } from '../components/styles1';
-import { Picker } from '@react-native-picker/picker'; // Install this: npm install @react-native-picker/picker
-import DateTimePicker from '@react-native-community/datetimepicker'; // Install this: npm install @react-native-community/datetimepicker
-import { useNavigation } from '@react-navigation/native'; // Import the hook
+import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -28,9 +27,16 @@ const SignUp = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [error, setError] = useState('');
 
-  const navigation = useNavigation(); // Use the hook to get the navigation object
+  const navigation = useNavigation();
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
+  // References for TextInput fields
+  const nameRef = useRef(null);  // Reference for the name field
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
+  const locationRef = useRef(null);
 
   const handleSignUp = async () => {
     // Validation
@@ -44,26 +50,21 @@ const SignUp = () => {
     }
 
     // In a real app, you'd make an API call here
-    // to create the user account.  For now, we'll just
-    // simulate a successful signup.
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Replace this with your actual signup logic
       console.log('Signing up with:', { name, email, password, location, bloodGroup, dateOfBirth });
 
-      // Simulate successful signup
-      navigation.navigate('DonorDash');  // Navigate to DonorDash after successful signup
+      navigation.navigate('DonorDash');
     } catch (err) {
       setError('Signup failed. Please try again.');
-      console.error('Signup error:', err);  // Log the error for debugging
+      console.error('Signup error:', err);
     }
   };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || dateOfBirth;
-    setShowDatePicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
+    setShowDatePicker(Platform.OS === 'ios');
     setDateOfBirth(currentDate);
   };
 
@@ -79,7 +80,10 @@ const SignUp = () => {
         behavior={Platform.OS === "ios" ? "padding" : null}
         keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
       >
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled" // Prevent taps on the keyboard from blurring inputs
+        >
           <Text style={styles.title}>Sign Up</Text>
           {error ? <Text style={styles.error}>{error}</Text> : null}
 
@@ -88,6 +92,10 @@ const SignUp = () => {
             placeholder="Name"
             value={name}
             onChangeText={setName}
+            ref={nameRef}
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current.focus()}
+            blurOnSubmit={false}
           />
           <TextInput
             style={styles.input}
@@ -96,6 +104,10 @@ const SignUp = () => {
             autoCapitalize="none"
             value={email}
             onChangeText={setEmail}
+            ref={emailRef}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current.focus()}
+            blurOnSubmit={false}
           />
           <TextInput
             style={styles.input}
@@ -103,6 +115,10 @@ const SignUp = () => {
             secureTextEntry
             value={password}
             onChangeText={setPassword}
+            ref={passwordRef}
+            returnKeyType="next"
+            onSubmitEditing={() => confirmPasswordRef.current.focus()}
+            blurOnSubmit={false}
           />
           <TextInput
             style={styles.input}
@@ -110,12 +126,19 @@ const SignUp = () => {
             secureTextEntry
             value={confirmPassword}
             onChangeText={setConfirmPassword}
+            ref={confirmPasswordRef}
+            returnKeyType="next"
+            onSubmitEditing={() => locationRef.current.focus()}
+            blurOnSubmit={false}
           />
           <TextInput
             style={styles.input}
             placeholder="Location"
             value={location}
             onChangeText={setLocation}
+            ref={locationRef}
+            returnKeyType="done"
+            onSubmitEditing={handleSignUp}
           />
 
           <View style={styles.pickerContainer}>
@@ -123,9 +146,8 @@ const SignUp = () => {
             <Picker
               selectedValue={bloodGroup}
               style={styles.picker}
-              onValueChange={(itemValue, itemIndex) =>
-                setBloodGroup(itemValue)
-              }>
+              onValueChange={setBloodGroup}
+            >
               <Picker.Item label="Select Blood Group" value="" />
               {bloodGroups.map((group) => (
                 <Picker.Item key={group} label={group} value={group} />

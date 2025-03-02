@@ -18,19 +18,19 @@ const onboardingData = [
     id: '1',
     title: 'Find Blood Donors Nearby',
     description: 'Connect with blood donors in your area who match your blood type requirements. Fast and effective.',
-    image: require('../assets/donor_illustration.jpg'), // You'll need to add this image to your assets
+    image: require('../assets/donor_illustration.png'), // You'll need to add this image to your assets
   },
   {
     id: '2',
     title: 'Request Blood Donations',
     description: 'Create blood donation requests and share your needs with potential donors in your community.',
-    image: require('../assets/request_illustration.jpeg'), // You'll need to add this image
+    image: require('../assets/request_illustration.png'), // You'll need to add this image
   },
   {
     id: '3',
     title: 'Save Lives Together',
     description: 'Join our community of donors and recipients working together to save lives through blood donation.',
-    image: require('../assets/community_illustration.jpeg'), // You'll need to add this image
+    image: require('../assets/community_illustration.png'), // You'll need to add this image
   },
 ];
 const Welcome = ({ navigation }) => {
