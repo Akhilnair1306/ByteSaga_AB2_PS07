@@ -1,4 +1,3 @@
-Sure! Here's a template for your `README.md` file for your React Native Expo application for the hackathon:
 
 ---
 
@@ -6,15 +5,41 @@ Sure! Here's a template for your `README.md` file for your React Native Expo app
 
 ## 🚀 Introduction
 
-Welcome to ByteSaga! This is our project for the [Hackathon Name], developed by Team **ByteSaga**. The project is a React Native application built with **Expo**, designed to [briefly describe what your app does].
+Welcome to ByteSaga! This is our project for the ALPHABYTE, developed by Team **ByteSaga**. The project is a React Native application built with **Expo**, designed to connects blood donors with people in need during emergencies. The app features a robust SOS system, real-time location tracking, and an intuitive interface for managing blood donation requests.
 
 ## 📱 App Features
 
-- **Feature 1**: [Description of feature]
-- **Feature 2**: [Description of feature]
-- **Feature 3**: [Description of feature]
-- **Feature 4**: [Description of feature]
+### Authentication & User Management
+- Secure login and registration system
+- Profile management with blood type information
+- Emergency contact details
+- Location-based services
 
+### Blood Request System
+- Create urgent blood requests
+- Specify blood type and urgency level
+- Hospital location integration
+- Request tracking and history
+
+### Emergency SOS System
+- Quick access floating SOS button
+- Real-time location tracking
+- Automated donor matching
+- Emergency notification system
+- Status tracking for emergency requests
+
+### Donor Dashboard
+- View and manage donation requests
+- Track donation history
+- Impact statistics
+- Location-based request matching
+
+### Navigation
+- Bottom floating navigation bar
+- Easy access to key features
+- Profile management
+- Request history
+  
 ## 🔧 Prerequisites
 
 To get started with the project locally, make sure you have the following installed:
@@ -86,9 +111,6 @@ We welcome contributions! If you want to contribute to this project, feel free t
 4. Test the changes
 5. Open a pull request with a description of your changes
 
-## 🎨 Design and Assets
-
-The app design and assets were created by [mention the designer, if any]. If you'd like to reuse any of the assets or design components, please make sure to credit appropriately.
 
 ## 📝 License
 
@@ -97,8 +119,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **ByteSaga Team**  
-- [Your Name]
-- [Teammates' Names]
+- Akhil Nair
+- Suraj Dora
+- Kunnal More
 
 ---
 
