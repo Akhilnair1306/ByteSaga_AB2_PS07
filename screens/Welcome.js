@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { StatusBar, Platform } from 'react-native';
 import {
   View,
   Text,
@@ -8,101 +9,116 @@ import {
   FlatList,
   Animated,
   Dimensions,
+  SafeAreaView
 } from 'react-native';
 import { colors, typography, spacing, layout, buttons, containers } from '../components/styles1';
-// Get screen dimensions
+
 const { width } = Dimensions.get('window');
-// Onboarding data with slides
+
 const onboardingData = [
   {
     id: '1',
     title: 'Find Blood Donors Nearby',
     description: 'Connect with blood donors in your area who match your blood type requirements. Fast and effective.',
-    image: require('../assets/donor_illustration.png'), // You'll need to add this image to your assets
+    image: require('../assets/donor_illustration.png'),
   },
   {
     id: '2',
     title: 'Request Blood Donations',
     description: 'Create blood donation requests and share your needs with potential donors in your community.',
-    image: require('../assets/request_illustration.png'), // You'll need to add this image
+    image: require('../assets/request_illustration.png'),
   },
   {
     id: '3',
     title: 'Save Lives Together',
     description: 'Join our community of donors and recipients working together to save lives through blood donation.',
-    image: require('../assets/community_illustration.png'), // You'll need to add this image
+    image: require('../assets/community_illustration.png'),
   },
 ];
+
 const Welcome = ({ navigation }) => {
+  const [showWelcomeScreen, setShowWelcomeScreen] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef(null);
-  // Function to handle when slides change
+
+  useEffect(() => {
+    // Increased display time to 4 seconds
+    if (showWelcomeScreen) {
+      const timer = setTimeout(() => {
+        setShowWelcomeScreen(false);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showWelcomeScreen]);
+
   const viewableItemsChanged = useRef(({ viewableItems }) => {
     setCurrentIndex(viewableItems[0]?.index || 0);
   }).current;
+
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
-  // Function to scroll to the next slide
+
   const scrollToNextSlide = () => {
     if (currentIndex < onboardingData.length - 1) {
       slidesRef.current.scrollToIndex({ index: currentIndex + 1 });
     }
   };
-  // Function to skip to the last slide (Sign Up/Login)
+
   const skipToEnd = () => {
     const lastIndex = onboardingData.length - 1;
-    slidesRef.current.scrollToIndex({ 
-        index: lastIndex,
-        animated: true
-    });
+    slidesRef.current.scrollToIndex({ index: lastIndex, animated: true });
     setCurrentIndex(lastIndex);
   };
-  // Render each slide
-  const renderSlide = ({ item, index }) => {
-    return (
-      <View style={styles.slide}>
-        <View style={styles.imageContainer}>
-          <Image source={item.image} style={styles.image} />
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.description}>{item.description}</Text>
-        </View>
+
+  const renderSlide = ({ item }) => (
+    <View style={styles.slide}>
+      <View style={styles.imageContainer}>
+        <Image source={item.image} style={styles.image} />
       </View>
-    );
-  };
-  // Render pagination dots
-  const Paginator = () => {
-    return (
-      <View style={styles.paginationContainer}>
-        {onboardingData.map((_, index) => {
-          const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
-          
-          const dotWidth = scrollX.interpolate({
-            inputRange,
-            outputRange: [10, 20, 10],
-            extrapolate: 'clamp',
-          });
-          
-          const opacity = scrollX.interpolate({
-            inputRange,
-            outputRange: [0.3, 1, 0.3],
-            extrapolate: 'clamp',
-          });
-          
-          return (
-            <Animated.View 
-              key={index.toString()} 
-              style={[
-                styles.dot, 
-                { width: dotWidth, opacity }
-              ]} 
-            />
-          );
-        })}
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.description}>{item.description}</Text>
       </View>
+    </View>
+  );
+
+  const Paginator = () => (
+    <View style={styles.paginationContainer}>
+      {onboardingData.map((_, index) => {
+        const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
+        const dotWidth = scrollX.interpolate({
+          inputRange,
+          outputRange: [10, 20, 10],
+          extrapolate: 'clamp',
+        });
+        const opacity = scrollX.interpolate({
+          inputRange,
+          outputRange: [0.3, 1, 0.3],
+          extrapolate: 'clamp',
+        });
+
+        return (
+          <Animated.View
+            key={index.toString()}
+            style={[styles.dot, { width: dotWidth, opacity }]}
+          />
+        );
+      })}
+    </View>
+  );
+
+  if (showWelcomeScreen) {
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+            <View style={styles.welcomeContainer}>
+                <Text style={styles.welcomeTitle}>BloodLink</Text>
+                <Text style={styles.welcomeSubtitle}>Donate Blood, Save Lives</Text>
+            </View>
+        </SafeAreaView>
     );
-  };
+}
+
+
   return (
     <View style={styles.container}>
       {currentIndex !== onboardingData.length - 1 && (
@@ -131,13 +147,13 @@ const Welcome = ({ navigation }) => {
       <View style={styles.bottomContainer}>
         {currentIndex === onboardingData.length - 1 ? (
           <View style={styles.buttonContainer}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.primaryButton}
               onPress={() => navigation.navigate('Login')}
             >
               <Text style={styles.buttonText}>Log In</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.secondaryButton}
               onPress={() => navigation.navigate('SignUp')}
             >
@@ -145,7 +161,7 @@ const Welcome = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         ) : (
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.primaryButton}
             onPress={scrollToNextSlide}
           >
@@ -156,12 +172,36 @@ const Welcome = ({ navigation }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  welcomeContainer: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: spacing.xl,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 60,
+},
+  welcomeTitle: {
+    ...typography.heading,
+    fontSize: 34,
+    color: colors.primary,
+    textAlign: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.md,
+  },
+  welcomeSubtitle: {
+    ...typography.subheading,
+    fontSize: 15,
+    color: colors.grey,
+    textAlign: 'center',
   },
   skipButton: {
     position: 'absolute',
@@ -244,4 +284,5 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
 });
+
 export default Welcome;
