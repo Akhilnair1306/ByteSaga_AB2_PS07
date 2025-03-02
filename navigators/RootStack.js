@@ -14,6 +14,7 @@ import DonorDashboard from '../screens/Donor/DonorDashboard';
 import RequestHistoryScreen from '../screens/RequestHistoryScreen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SOSScreen from '../screens/SOSScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 // import SignUp from './screens/Signup';
 // import Login from './screens/Login';
 const { primary,tertiary} = Colors
@@ -45,6 +46,7 @@ const RootStack = () => {
                         <Stack.Screen name= "DonorDash" component={DonorDashboard}/>
                         <Stack.Screen name= "ReqHisScreen" component={RequestHistoryScreen}/>
                         <Stack.Screen name="SOSScreen" component={SOSScreen} />
+                        <Stack.Screen name="Profile" component={ProfileScreen} />
                     </Stack.Navigator>
                     <SOSButton />
                 </View>
