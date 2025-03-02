@@ -1,5 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  Animated,
+  Easing,
+} from 'react-native';
 import * as Location from 'expo-location';
 import { colors, typography, spacing, buttons, containers, layout } from '../components/styles1';
 import MapView, { Marker } from 'react-native-maps';
@@ -7,6 +16,9 @@ import MapView, { Marker } from 'react-native-maps';
 const SOSScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const notificationAnim = useRef(new Animated.Value(-100)).current; // Start off-screen
 
   useEffect(() => {
     (async () => {
@@ -21,27 +33,106 @@ const SOSScreen = ({ navigation, route }) => {
     })();
   }, []);
 
-  const handleEmergencyResponse = (response) => {
+  const handleEmergencyResponse = async (response) => {
     if (response === 'accept') {
+      setIsSearching(true);
+
       Alert.alert(
-        'Emergency Accepted',
-        'You have accepted to respond to this emergency. Please proceed to the location.',
-        [{ text: 'OK', onPress: () => navigation.goBack() }]
+        'Emergency Sent',
+        'Your Emergency request has been sent to all the nearby Donors. Soon you will be contacted',
+        [{ text: 'OK', onPress: () => simulateDonorSearch() }]
       );
     } else {
       navigation.goBack();
     }
   };
 
+  const simulateDonorSearch = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    setIsSearching(false);
+
+    Alert.alert(
+      'Donor Found',
+      'A donor has been found nearby! The donor will be arriving soon. The donor details have been sent to your email.',
+      [{ text: 'OK', onPress: () => simulateEmailNotification() }]
+    );
+  };
+
+  const simulateEmailNotification = async () => {
+    // Set state to show the notification
+    setShowNotification(true);
+
+    // Animate the notification in
+    Animated.timing(notificationAnim, {
+      toValue: 0, // Slide in from the top
+      duration: 500, // Animation duration
+      easing: Easing.easeOut,
+      useNativeDriver: false, // Important for animating height
+    }).start(() => {
+      // After a delay, animate the notification out
+      setTimeout(() => {
+        Animated.timing(notificationAnim, {
+          toValue: -100, // Slide out to the top
+          duration: 500,
+          easing: Easing.easeIn,
+          useNativeDriver: false,
+        }).start(() => {
+          setShowNotification(false); // Hide after animation
+          navigation.navigate('DonorDash');
+        });
+      }, 3000); // Display the notification for 3 seconds
+    });
+  };
+
   return (
     <View style={containers.screen}>
+      {/* Notification Component */}
+      {showNotification && (
+        <Animated.View
+          style={[
+            styles.notificationContainer,
+            { top: notificationAnim },
+          ]}
+        >
+          <Text style={styles.notificationText}>
+            Donor details have been sent to your email.
+          </Text>
+        </Animated.View>
+      )}
+
       <View style={styles.container}>
         <Text style={styles.title}>Emergency Alert</Text>
-        
+
         {errorMsg ? (
           <Text style={styles.errorText}>{errorMsg}</Text>
         ) : !location ? (
           <Text style={styles.loadingText}>Loading location...</Text>
+        ) : isSearching ? (
+          <View style={styles.mapContainer}>
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+            >
+              <Marker
+                coordinate={{
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+                }}
+                title="Emergency Location"
+              />
+            </MapView>
+
+            <View style={styles.searchingOverlay}>
+              <ActivityIndicator size="large" color={colors.primary} />
+              <Text style={styles.searchingText}>Searching for nearby donors...</Text>
+            </View>
+          </View>
         ) : (
           <>
             <View style={styles.mapContainer}>
@@ -76,14 +167,7 @@ const SOSScreen = ({ navigation, route }) => {
                 style={[buttons.primary, styles.acceptButton]}
                 onPress={() => handleEmergencyResponse('accept')}
               >
-                <Text style={styles.buttonText}>Accept Emergency</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[buttons.secondary, styles.declineButton]}
-                onPress={() => handleEmergencyResponse('decline')}
-              >
-                <Text style={[styles.buttonText, { color: colors.primary }]}>Decline</Text>
+                <Text style={styles.buttonText}>Send Emergency</Text>
               </TouchableOpacity>
             </View>
           </>
@@ -109,6 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: layout.borderRadius.medium,
     overflow: 'hidden',
     marginBottom: spacing.lg,
+    position: 'relative',
   },
   map: {
     flex: 1,
@@ -153,6 +238,30 @@ const styles = StyleSheet.create({
     color: colors.grey,
     textAlign: 'center',
   },
+  searchingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchingText: {
+    ...typography.subheading,
+    marginTop: spacing.md,
+  },
+  notificationContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.primary,
+    padding: spacing.md,
+    alignItems: 'center',
+    zIndex: 10, // Ensure it's on top
+  },
+  notificationText: {
+    ...typography.button,
+    color: colors.white,
+  },
 });
 
-export default SOSScreen; 
+export default SOSScreen;
