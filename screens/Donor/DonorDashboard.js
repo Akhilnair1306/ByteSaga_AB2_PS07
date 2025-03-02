@@ -7,7 +7,6 @@ import {
   Switch,
   Dimensions,
   StyleSheet,
-  ScrollView,
   SafeAreaView
 } from 'react-native';
 
@@ -19,8 +18,7 @@ import {
   containers,
   layout,
 } from "../../components/styles1"; // Import your styles
-import FloatingNavigationBar from '../../components/floatingNavigationBar';
-// import FloatingNavigationBar from "../../components/FloatingNavigationBar"; // Import the floating navbar
+import FloatingNavigationBar from '../../components/floatingNavigationBar'; // Import the floating navbar
 
 const { width } = Dimensions.get('window'); // For handling the slide width dynamically
 
@@ -75,7 +73,7 @@ const historyItems = [
 const DonorDashboard = () => {
   const [isAvailable, setIsAvailable] = useState(true);  // Donor availability toggle
   const flatListRef = useRef(null); // Reference for FlatList
-  
+
   // Function to toggle donor availability
   const toggleAvailability = () => setIsAvailable(prevState => !prevState);
 
@@ -103,82 +101,93 @@ const DonorDashboard = () => {
     return () => clearInterval(interval); // Cleanup the interval when the component unmounts
   }, []);
 
+  // New key extractor function to handle unique keys for items
+  const keyExtractor = (item, index) => `card-${item?.id || index}`;
+
   return (
     <SafeAreaView style={containers.screen}>
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        {/* Donor Dashboard Main Section */}
-        <View style={styles.headerContainer}>
-          <Text style={styles.dashboardTitle}>Donor Dashboard</Text>
-          <View style={styles.availabilityContainer}>
-            <Text style={styles.availabilityText}>Availability: </Text>
-            <Switch
-              value={isAvailable}
-              onValueChange={toggleAvailability}
-              trackColor={{ false: colors.grey, true: colors.primary }}
-              thumbColor={isAvailable ? colors.white : colors.lightGrey}
-            />
-          </View>
-        </View>
+      <FlatList
+        ListHeaderComponent={
+          <>
+            {/* Donor Dashboard Main Section */}
+            <View style={styles.headerContainer}>
+              <Text style={styles.dashboardTitle}>Donor Dashboard</Text>
+              <View style={styles.availabilityContainer}>
+                <Text style={styles.availabilityText}>Availability: </Text>
+                <Switch
+                  value={isAvailable}
+                  onValueChange={toggleAvailability}
+                  trackColor={{ false: colors.grey, true: colors.primary }}
+                  thumbColor={isAvailable ? colors.white : colors.lightGrey}
+                />
+              </View>
+            </View>
 
-        {/* Notifications Section - Render only if donor is available */}
-        {isAvailable && (
-          <View style={styles.notificationListContainer}>
-            <Text style={styles.sectionTitle}>Urgent Requests</Text>
-            <FlatList
-              ref={flatListRef}
-              data={notifications}
-              keyExtractor={item => item.id}
-              horizontal
-              showsHorizontalScrollIndicator={false} // Hide the scroll indicator
-              renderItem={({ item }) => (
-                <View style={styles.notificationCard}>
-                  <Text style={styles.notificationTitle}>Blood Type: {item.bloodType}</Text>
-                  <Text style={styles.notificationText}>Urgency: {item.urgency}</Text>
-                  <Text style={styles.notificationText}>Location: {item.location}</Text>
-                  <Text style={styles.notificationText}>Posted: {item.time}</Text>
+            {/* Notifications Section - Render only if donor is available */}
+            {isAvailable && (
+              <View style={styles.notificationListContainer}>
+                <Text style={styles.sectionTitle}>Urgent Requests</Text>
+                <FlatList
+                  ref={flatListRef}
+                  data={notifications}
+                  keyExtractor={keyExtractor} // Use the new key extractor for the inner FlatList
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  renderItem={({ item }) => (
+                    <View style={styles.notificationCard}>
+                      <Text style={styles.notificationTitle}>Blood Type: {item.bloodType}</Text>
+                      <Text style={styles.notificationText}>Urgency: {item.urgency}</Text>
+                      <Text style={styles.notificationText}>Location: {item.location}</Text>
+                      <Text style={styles.notificationText}>Posted: {item.time}</Text>
 
-                  <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                      onPress={() => acceptRequest(item)}
-                      style={[styles.button, styles.acceptButton]}
-                    >
-                      <Text style={styles.buttonText}>Accept</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => declineRequest(item)}
-                      style={[styles.button, styles.declineButton]}
-                    >
-                      <Text style={styles.buttonText}>Decline</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                      <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                          onPress={() => acceptRequest(item)}
+                          style={[styles.button, styles.acceptButton]}
+                        >
+                          <Text style={styles.buttonText}>Accept</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => declineRequest(item)}
+                          style={[styles.button, styles.declineButton]}
+                        >
+                          <Text style={styles.buttonText}>Decline</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
+                  contentContainerStyle={styles.notificationListContent}
+                />
+              </View>
+            )}
+
+            {/* History Section */}
+            <View style={styles.historyContainer}>
+              <Text style={styles.sectionTitle}>Donation History</Text>
+              {historyItems.length === 0 ? (
+                <Text style={styles.noHistoryText}>No previous donations available.</Text>
+              ) : (
+                <FlatList
+                  data={historyItems}
+                  keyExtractor={keyExtractor} // And for this one
+                  renderItem={({ item }) => (
+                    <View style={styles.historyCard}>
+                      <Text style={styles.historyCardTitle}>Blood Type: {item.bloodType}</Text>
+                      <Text style={styles.historyCardText}>Location: {item.location}</Text>
+                      <Text style={styles.historyCardText}>Date: {item.location}</Text>
+                      <Text style={styles.historyCardText}>Status: {item.status}</Text>
+                    </View>
+                  )}
+                />
               )}
-              contentContainerStyle={styles.notificationListContent}
-            />
-          </View>
-        )}
-
-        {/* History Section */}
-        <View style={styles.historyContainer}>
-          <Text style={styles.sectionTitle}>Donation History</Text>
-          {historyItems.length === 0 ? (
-            <Text style={styles.noHistoryText}>No previous donations available.</Text>
-          ) : (
-            <FlatList
-              data={historyItems}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <View style={styles.historyCard}>
-                  <Text style={styles.historyCardTitle}>Blood Type: {item.bloodType}</Text>
-                  <Text style={styles.historyCardText}>Location: {item.location}</Text>
-                  <Text style={styles.historyCardText}>Date: {item.date}</Text>
-                  <Text style={styles.historyCardText}>Status: {item.status}</Text>
-                </View>
-              )}
-            />
-          )}
-        </View>
-      </ScrollView>
+            </View>
+          </>
+        }
+        data={[]} // An empty data array, since all content is rendered in the header
+        keyExtractor={keyExtractor} // Add a key extractor for the outer FlatList
+        renderItem={() => null} // An empty render function
+        ListFooterComponent={<View style={{ height: 80 }} />} // add height to the footer so we don't cover what is behind the navbar
+      />
       <FloatingNavigationBar />
     </SafeAreaView>
   );
@@ -189,11 +198,14 @@ const styles = StyleSheet.create({
     paddingBottom: 80, // Adjust based on the height of the floating navbar
   },
   headerContainer: {
-    padding: spacing.lg,
+    paddingHorizontal: spacing.lg, // Keep horizontal padding
+    paddingTop: spacing.md,     // Reduced top padding
+    paddingBottom: spacing.sm,  // Reduced bottom padding
     backgroundColor: colors.white,
     ...layout.shadow.small,
     borderRadius: layout.borderRadius.medium,
     margin: spacing.md,
+    marginTop: 60, // Add margin to lower the container
   },
   dashboardTitle: {
     ...typography.heading,
@@ -205,6 +217,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: spacing.md,
+    marginBottom: spacing.md // add bottom spacing
   },
   availabilityText: {
     ...typography.subheading,
@@ -233,7 +246,8 @@ const styles = StyleSheet.create({
     marginVertical: spacing.sm,
     ...layout.shadow.small,
     width: width * 0.7,
-    height: 200, // Adjusted height to fit content better
+    flexDirection: 'column',//Adding the flexDirection to the card
+    overflow: 'hidden', // Ensure content doesn't overflow and cause issues
   },
   notificationTitle: {
     ...typography.subheading,
@@ -253,8 +267,8 @@ const styles = StyleSheet.create({
   },
   button: {
     ...buttons.primary,
-    width: '45%',
-    height: 40,
+    width: '47%',
+    height: 53,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: layout.borderRadius.full,

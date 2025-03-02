@@ -1,3 +1,4 @@
+//SignUp.js
 import React, { useState } from 'react';
 import {
   View,
@@ -53,7 +54,7 @@ const SignUp = () => {
       console.log('Signing up with:', { name, email, password, location, bloodGroup, dateOfBirth });
 
       // Simulate successful signup
-      navigation.navigate('Login');  // Navigate to Login after successful signup
+      navigation.navigate('DonorDash');  // Navigate to DonorDash after successful signup
     } catch (err) {
       setError('Signup failed. Please try again.');
       console.error('Signup error:', err);  // Log the error for debugging

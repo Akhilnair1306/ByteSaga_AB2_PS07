@@ -1,5 +1,6 @@
 import { Dimensions } from 'react-native';
 const { width, height } = Dimensions.get('window');
+
 export const colors = {
   primary: '#FF7B92', // Soft pink from the image
   secondary: '#9B87F5', // Purple from the image
@@ -10,34 +11,36 @@ export const colors = {
   grey: '#8A94A6', // Subtitle text color
   lightGrey: '#EEF2F9', // Light grey for borders
 };
+
 export const typography = {
   heading: {
-    fontFamily: 'System', // Replace with your custom font if available
+    fontFamily: 'Poppins_700Bold', // Use Poppins Bold
     fontSize: 28,
     fontWeight: '700',
     lineHeight: 34,
     color: colors.dark,
   },
   subheading: {
-    fontFamily: 'System',
+    fontFamily: 'Poppins_400Regular', // Use Poppins Regular
     fontSize: 16,
     fontWeight: '400',
     lineHeight: 24,
     color: colors.grey,
   },
   button: {
-    fontFamily: 'System',
+    fontFamily: 'Poppins_600SemiBold', // Use Poppins Semibold
     fontSize: 16,
     fontWeight: '600',
     color: colors.white,
   },
   caption: {
-    fontFamily: 'System',
+    fontFamily: 'Poppins_400Regular', // Use Poppins Regular
     fontSize: 14,
     fontWeight: '400',
     color: colors.grey,
   },
 };
+
 export const spacing = {
   xs: 4,
   sm: 8,
@@ -46,6 +49,7 @@ export const spacing = {
   xl: 32,
   xxl: 48,
 };
+
 export const layout = {
   screenWidth: width,
   screenHeight: height,
@@ -72,6 +76,7 @@ export const layout = {
     },
   },
 };
+
 export const buttons = {
   primary: {
     backgroundColor: colors.primary,
@@ -87,6 +92,7 @@ export const buttons = {
     borderColor: colors.primary,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.xl,
+    alignItems: 'center'
   },
   text: {
     color: colors.primary,
@@ -94,6 +100,7 @@ export const buttons = {
     fontWeight: '500',
   },
 };
+
 export const containers = {
   screen: {
     flex: 1,
@@ -112,6 +119,7 @@ export const containers = {
     ...layout.shadow.medium,
   },
 };
+
 export const animations = {
   transition: {
     fade: {

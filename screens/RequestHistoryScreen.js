@@ -19,7 +19,6 @@ import {
   layout,
 } from "../components/styles1"; // Import your styles
 import FloatingNavigationBar from "../components/floatingNavigationBar";
-// import FloatingNavigationBar from "../components/FloatingNavigationBar"; // Import the floating navbar
 
 // Mock Data for Request History
 const requestHistoryData = [
@@ -205,15 +204,15 @@ const RequestHistoryScreen = () => {
         ) : (
           <TouchableOpacity
             style={[
-              styles.trackButton,
-              trackingVisibility[id] && styles.viewLessButton,
-            ]} // Apply different styles for "View Less"
+              styles.trackButton, // Base styles
+              trackingVisibility[id] && styles.viewLessButton, // Apply viewLess styles conditionally
+            ]}
             onPress={() => handleTrackRequest(status, id)}
           >
             <Text
               style={[
-                styles.trackButtonText,
-                trackingVisibility[id] && styles.viewLessButtonText,
+                styles.trackButtonText, // Base text styles
+                trackingVisibility[id] && styles.viewLessButtonText, // Apply viewLess text styles conditionally
               ]}
             >
               {trackingVisibility[id] ? "View Less" : "Track Request"}
@@ -272,6 +271,8 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     borderRadius: layout.borderRadius.medium,
     ...layout.shadow.small,
+    marginLeft: spacing.md, // Add left margin
+    marginRight: spacing.md, 
   },
   requestTitle: {
     ...typography.subheading,
@@ -286,21 +287,27 @@ const styles = StyleSheet.create({
     marginVertical: spacing.xxs,
   },
   trackButton: {
-    ...buttons.primary,
+    backgroundColor: colors.primary,
     paddingVertical: spacing.sm,
-    borderRadius: layout.borderRadius.full,
+    borderRadius: layout.borderRadius.small, // Less rounded corners
     marginVertical: spacing.md,
+    alignItems: 'center', // Center text horizontally
+    justifyContent: 'center', // Center text vertically
+     flexDirection: 'row',
   },
   viewLessButton: {
-    ...buttons.secondary,
+        backgroundColor: colors.background, // Transparent background
+    borderWidth: 1, // Primary color border
+    borderColor: colors.primary,
   },
   trackButtonText: {
     ...typography.button,
     fontSize: 14,
+    textAlign: 'center', // Center text within the button
+    color: colors.white,
   },
   viewLessButtonText: {
-    ...typography.button,
-    color: colors.primary,
+        color: colors.primary, // Primary color text
   },
   fulfilledText: {
     ...typography.caption,

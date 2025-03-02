@@ -31,7 +31,7 @@ const RootStack = () => {
                     paddingLeft: 20
                 }
             }}
-            initialRouteName= 'DonorDash'
+            initialRouteName= 'Welcome'
             >
                 <Stack.Screen name= "Login" component={Login}/>
                 <Stack.Screen name="Welcome" component={WelcomeScreen} />

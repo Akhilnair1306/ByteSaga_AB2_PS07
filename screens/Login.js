@@ -1,3 +1,4 @@
+//Login.js
 import React, { useState } from 'react';
 import {
   View,
@@ -33,8 +34,8 @@ const Login = ({ navigation }) => {
 
       // Replace this with your actual login logic
       if (email === 'test@example.com' && password === 'password') {
-        // Successful login - navigate to main app screen
-        navigation.navigate('MainApp'); // Replace 'MainApp' with your main screen name
+        // Successful login - navigate to DonorDashboard
+        navigation.navigate('DonorDash');
       } else {
         setError('Invalid email or password.');
       }
@@ -126,3 +127,4 @@ const styles = StyleSheet.create({
 });
 
 export default Login;
+

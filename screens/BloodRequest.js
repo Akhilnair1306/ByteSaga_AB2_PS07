@@ -26,7 +26,7 @@ const validationSchema = Yup.object({
 const BloodRequestScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
   const [formValues, setFormValues] = useState(null); // Store form values when the modal is opened
-
+   const [formError, setFormError] = useState('');
   // Function to handle form submission
   const handleSubmit = (values) => {
     console.log(values); // Replace with your form submission logic
@@ -38,6 +38,23 @@ const BloodRequestScreen = ({ navigation }) => {
     setModalVisible(false); // Simply close the modal if canceled
   };
 
+  const handleConfirmRequest = async (values) => {
+    try {
+      await validationSchema.validate(values, { abortEarly: false });
+      setFormValues(values);
+      handleSubmit(values);
+      setFormError("")
+      navigation.navigate("DonorDash");
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        // Set Formik error message if validation fails
+        setFormError("Please Fill in All Fields")
+      } else {
+        console.error('Validation failed with an unexpected error:', error);
+         setFormError("Validation has an unexpected error")
+      }
+    }
+  };
   return (
     <KeyboardAvoidWrapper>
       <View style={containers.screen}>
@@ -53,11 +70,7 @@ const BloodRequestScreen = ({ navigation }) => {
               additionalNotes: '',
             }}
             validationSchema={validationSchema}
-            onSubmit={(values) => {
-              setFormValues(values);
-              handleSubmit(values);
-              navigation.navigate("DonorDash");
-            }}
+            onSubmit={handleConfirmRequest}
           >
             {({ values, handleChange, handleBlur, handleSubmit, errors, touched }) => (
               <View style={styles.formArea}>
@@ -126,7 +139,7 @@ const BloodRequestScreen = ({ navigation }) => {
                   multiline={true} // Allow multiple lines
                   numberOfLines={4}  // Set the number of lines
                 />
-
+                 {formError ? <Text style={styles.errorMsg}>{formError}</Text> : null}
                 {/* Confirm Request Button */}
                 <TouchableOpacity style={buttons.primary} onPress={handleSubmit}>
                   <Text style={styles.buttonText}>Confirm Request</Text>
@@ -138,7 +151,7 @@ const BloodRequestScreen = ({ navigation }) => {
             )}
           </Formik>
         </ScrollView>
-        <FloatingNavigationBar/>
+        <FloatingNavigationBar />
       </View>
 
       {/* Confirmation Modal */}
