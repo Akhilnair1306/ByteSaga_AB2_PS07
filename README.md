@@ -53,7 +53,7 @@ To get started with the project locally, make sure you have the following instal
 ### Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/byteSaga.git
+git clone https://github.com/Akhilnair1306/ByteSaga_AB2_PS07.git
 cd byteSaga
 ```
 
@@ -91,14 +91,23 @@ Once the app is running, you can test it by:
 Here’s a brief overview of the project structure:
 
 ```
-/byteSaga
-├── /assets          # Images, fonts, and other static assets
-├── /components      # Reusable components used throughout the app
-├── /screens         # App screens and views
-├── /services        # API calls and other services
-├── /navigation      # Navigation setup (React Navigation)
-├── App.js           # Entry point for the app
-├── package.json     # App dependencies and scripts
+blood-donation-app/
+├── App.js # Application entry point
+├── assets/ # Static assets
+├── components/
+│ ├── SOSButton.js # Emergency SOS button
+│ ├── floatingNavigationBar.js # Bottom navigation
+│ └── styles1.js # Global styles
+├── navigators/
+│ └── RootStack.js # Navigation configuration
+├── screens/
+│ ├── Login.js # Authentication
+│ ├── Signup.js # User registration
+│ ├── BloodRequest.js # Blood request form
+│ ├── ProfileScreen.js # User profile
+│ ├── SOSScreen.js # Emergency screen
+│ └── RequestHistoryScreen.js # Request history
+└── README.md
 ```
 
 ## 🔐 Contributing
