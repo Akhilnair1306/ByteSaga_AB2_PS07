@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Replace this with your actual login logic
-      if (email === 'test@example.com' && password === 'password') {
+      if (email === 'zoro5onigiri@gmail.com' && password === 'Password') {
         // Successful login - navigate to DonorDashboard
         navigation.navigate('DonorDash');
       } else {

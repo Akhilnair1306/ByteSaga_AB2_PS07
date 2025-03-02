@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView, Modal, View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -26,7 +26,8 @@ const validationSchema = Yup.object({
 const BloodRequestScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
   const [formValues, setFormValues] = useState(null); // Store form values when the modal is opened
-   const [formError, setFormError] = useState('');
+  const [formError, setFormError] = useState('');
+
   // Function to handle form submission
   const handleSubmit = (values) => {
     console.log(values); // Replace with your form submission logic
@@ -41,20 +42,38 @@ const BloodRequestScreen = ({ navigation }) => {
   const handleConfirmRequest = async (values) => {
     try {
       await validationSchema.validate(values, { abortEarly: false });
+
+      // Display confirmation alert
+      Alert.alert(
+        "Confirm Request",
+        "The request will be broadcasted to nearby donors.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              // Navigate to DonorDashboard after clicking OK
+              handleSubmit(values); // Optionally submit the form
+              navigation.navigate("DonorDash");
+            },
+          },
+        ],
+        { cancelable: false } // Prevent dismissing the alert by tapping outside
+      );
+
       setFormValues(values);
-      handleSubmit(values);
-      setFormError("")
-      navigation.navigate("DonorDash");
+
+      setFormError("");
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         // Set Formik error message if validation fails
-        setFormError("Please Fill in All Fields")
+        setFormError("Please Fill in All Fields");
       } else {
         console.error('Validation failed with an unexpected error:', error);
-         setFormError("Validation has an unexpected error")
+        setFormError("Validation has an unexpected error");
       }
     }
   };
+
   return (
     <KeyboardAvoidWrapper>
       <View style={containers.screen}>
@@ -139,14 +158,16 @@ const BloodRequestScreen = ({ navigation }) => {
                   multiline={true} // Allow multiple lines
                   numberOfLines={4}  // Set the number of lines
                 />
-                 {formError ? <Text style={styles.errorMsg}>{formError}</Text> : null}
+                {formError ? <Text style={styles.errorMsg}>{formError}</Text> : null}
                 {/* Confirm Request Button */}
                 <TouchableOpacity style={buttons.primary} onPress={handleSubmit}>
                   <Text style={styles.buttonText}>Confirm Request</Text>
                 </TouchableOpacity>
 
                 {/* Optionally, Display a Message */}
-                <Text style={styles.note}>Note: Once you confirm, the request will be broadcasted to nearby donors.</Text>
+                <Text style={styles.note}>
+                  Note: Once you confirm, the request will be broadcasted to nearby donors.
+                </Text>
               </View>
             )}
           </Formik>

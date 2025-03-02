@@ -15,18 +15,18 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const ProfileScreen = ({ navigation }) => {
   // Mock user data - in a real app, this would come from your backend
   const [userData] = useState({
-    name: 'John Doe',
+    name: 'Roronoa Zoro',
     bloodType: 'O+',
-    email: 'john.doe@example.com',
-    phone: '+1 234 567 8900',
-    location: 'New York, NY',
+    email: 'zoro5onigiri@gmail.com',
+    phone: '+91 45289 65928',
+    location: 'Mumbai, IN',
     donationsCount: 5,
     lastDonation: '2024-02-15',
     profileImage: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // Default avatar URL
     emergencyContact: {
-      name: 'Jane Doe',
+      name: 'Okiku',
       relation: 'Spouse',
-      phone: '+1 234 567 8901'
+      phone: '+91 65123 87629'
     }
   });
 
